@@ -1,0 +1,7 @@
+# path: exact discovered path; tool: tool label; kind: file/directory/link/opaque/missing/unknown/special.
+# size: bytes for ordinary metadata; sha256: blank unless exact content cleared; link_target: stored link target without traversal.
+# last_write_utc: observed UTC metadata; status: metadata-only/hashed-approved/name-only/not-followed/absent/excluded/unreadable or refusal.
+# Example is illustrative; scanner emits real CSV without these comments.
+path,tool,kind,size,sha256,link_target,last_write_utc,status
+<CONFIG-REPO>/AGENTS.md,<TOOL>,file,42,,,<DATE>,metadata-only
+

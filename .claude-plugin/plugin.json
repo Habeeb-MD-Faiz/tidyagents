@@ -1,0 +1,15 @@
+{
+  "name": "harnesskit",
+  "version": "0.1.0",
+  "description": "Reconcile an AI agent harness across tools with owner decisions, retained originals, adapters, and verification.",
+  "author": {
+    "name": "the harnesskit authors"
+  },
+  "license": "MIT",
+  "keywords": [
+    "configuration",
+    "audit",
+    "adapters"
+  ]
+}
+

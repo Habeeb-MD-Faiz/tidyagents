@@ -1,0 +1,18 @@
+{
+  "name": "harnesskit",
+  "owner": {
+    "name": "the harnesskit authors"
+  },
+  "metadata": {
+    "description": "Reconcile your AI agent setup into one provider-agnostic source of truth."
+  },
+  "plugins": [
+    {
+      "name": "harnesskit",
+      "source": "./",
+      "description": "An owner-led harness reconciliation workflow.",
+      "version": "0.1.0"
+    }
+  ]
+}
+

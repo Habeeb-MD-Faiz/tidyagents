@@ -1,0 +1,6 @@
+# id: adapter row; original: prior consumer path; backup: verified ordinary-file copy in run directory.
+# retained_original: same-volume retained original location; sha256: prior bytes; status: prepared before relocation or archived after verification.
+# The manifest is append-only within a run. prepared without archived requires inspection, not automatic retry.
+id,original,backup,retained_original,sha256,status
+rules,<PROFILE>/AGENTS.md,<PRIVATE-RUN>/rules.backup,<PROFILE>/.harnesskit-archive/<RUN>/AGENTS.md,<SHA256>,prepared
+

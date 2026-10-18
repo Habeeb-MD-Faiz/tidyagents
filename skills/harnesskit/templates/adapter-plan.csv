@@ -1,0 +1,8 @@
+# id: unique lowercase safe identifier; tool/profile: intended consumer labels; operation: copy/symlink/junction.
+# source/target: concrete absolute local paths; ancestors cannot be links; target parent must already exist.
+# source_sha256: reviewed file SHA-256 or engine directory fingerprint; expected_target: absent or prior ordinary-file SHA-256.
+# reviewed: yes only after owner plan review; decision: decision-log reference; content_reviewed: yes only after non-secret content clearance.
+# Replace this non-executable example. Dry run prints the plan hash; Execute must pin that exact hash.
+id,tool,profile,operation,source,target,source_sha256,expected_target,reviewed,decision,content_reviewed
+rules,<TOOL>,<PROFILE>,copy,<CONFIG-REPO>/AGENTS.md,<PROFILE>/AGENTS.md,<SHA256>,absent,no,D-01,no
+

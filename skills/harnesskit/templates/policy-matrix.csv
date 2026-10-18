@@ -1,0 +1,5 @@
+# policy: required behavior; tool/profile: consumer; mechanism: native permission/hook/external boundary/advice only.
+# coverage: exact operations covered; gap: bypass or unsupported case; fixture: safe test pointer; result: verified/inferred/needs checking; owner_acceptance: decision reference or pending.
+policy,tool,profile,mechanism,coverage,gap,fixture,result,owner_acceptance
+Do not read secrets,<TOOL>,<PROFILE>,external boundary,Agent identity lacks vault access,Boundary not installed,synthetic denied read,needs checking,pending
+
