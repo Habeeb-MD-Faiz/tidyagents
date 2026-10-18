@@ -1,4 +1,27 @@
-# tidyagents
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/hero-dark.png">
+    <source media="(prefers-color-scheme: light)" srcset="assets/hero-light.png">
+    <img src="assets/hero-light.png" alt="Four agent terminals and robots surround one open rulebook. Rule cards travel outward while a lock marks the guarded core." width="720">
+  </picture>
+</p>
+
+<p align="center"><strong>tidyagents</strong></p>
+
+<p align="center">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/licence-MIT-A9AAF5?style=flat-square&labelColor=000000" alt="Licence: MIT"></a>
+  <a href="https://tidyagents.vercel.app/#before-you-start"><img src="https://img.shields.io/badge/stage-early%20release-A9AAF5?style=flat-square&labelColor=000000" alt="Stage: early release"></a>
+  <a href="#start"><img src="https://img.shields.io/badge/works%20with-Claude%20Code%20%C2%B7%20Codex%20%C2%B7%20Gemini%20CLI%20%C2%B7%20Cursor-A9AAF5?style=flat-square&labelColor=000000" alt="Works with Claude Code, Codex, Gemini CLI and Cursor"></a>
+  <a href="docs/USAGE.md"><img src="https://img.shields.io/badge/Node-18%2B-A9AAF5?style=flat-square&labelColor=000000" alt="Node 18 or newer"></a>
+</p>
+
+# Tidy your AI setup.
+
+Bring your agent instructions into one source of truth, with reviewed adapters for each tool.
+
+[Website](https://tidyagents.vercel.app) · [Install](#start) · [How it works](#what-a-run-produces) · [Safety](#boundaries) · [FAQ](https://tidyagents.vercel.app/#faq) · [Contribute](CONTRIBUTING.md)
+
+---
 
 Reconcile an AI agent setup across tools and accounts. Start with the owner's needs. Inventory what exists, decide what belongs together, and connect each tool to a canonical configuration repository.
 
