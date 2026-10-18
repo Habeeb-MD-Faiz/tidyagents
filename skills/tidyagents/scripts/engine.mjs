@@ -2,7 +2,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
-import {sha,key,inside,absolute,secretName,stat,chain,safe,regular,digest,fingerprint,readCsv,csv,newFile,args} from './lib/safety.mjs';
+import {sha,key,inside,absolute,secretName,stat,chain,safe,regular,digest,fingerprint,parseCsv,readCsv,csv,newFile,args} from './lib/safety.mjs';
 
 const PLAN = ['id','tool','profile','operation','source','target','source_sha256','expected_target','reviewed','decision','content_reviewed'];
 const INVENTORY = ['path','tool','kind','size','sha256','link_target','last_write_utc','status'];
@@ -20,6 +20,9 @@ function discovery(opts) {
   const home = safe(opts['--home'] || os.homedir());
   const explicitHome = Boolean(opts['--home']);
   const repo = opts['--repo'] ? safe(opts['--repo']) : null;
+  if (opts['--ancestor-root'] && !repo) throw new Error('Ancestor root requires a repository');
+  const boundary = repo ? safe(opts['--ancestor-root'] || (explicitHome && inside(repo,home) ? home : repo)) : null;
+  if (repo && !inside(repo,boundary)) throw new Error('Repository must be inside ancestor root');
   const roots = [
     [path.join(home,'.claude'),'Claude Code'],
     [path.join(home,'.claude.json'),'Claude Code'],
@@ -35,12 +38,12 @@ function discovery(opts) {
   if (opts['--roots']) for (const r of readCsv(opts['--roots'], ['path','tool'])) roots.push([absolute(r.path),r.tool]);
   if (repo) {
     roots.push([repo,'repository']);
-    let parent = path.dirname(repo);
-    while (true) {
+    // Discovery is bounded independently of chain() lstat safety checks.
+    let parent = repo;
+    while (key(parent) !== key(boundary)) {
+      parent = path.dirname(parent);
       for (const name of ['AGENTS.md','AGENTS.override.md','CLAUDE.md','CLAUDE.local.md','GEMINI.md'])
         roots.push([path.join(parent,name),'ancestor']);
-      if (parent === path.dirname(parent)) break;
-      parent = path.dirname(parent);
     }
   }
   const approved = new Set(opts['--approved-files'] ?
@@ -147,6 +150,21 @@ function assess(r) {
 }
 function doctor(opts) {
   const rows=loadPlan(opts['--plan']), report=[];
+  let blocked=0, deferred=0;
+  const coverage=Boolean(opts['--findings'] || opts['--deferred']);
+  for (const option of ['--findings','--deferred']) {
+    if (!opts[option]) continue;
+    regular(opts[option]); // Only owner-cleared non-secret run records belong here.
+    const record=parseCsv(fs.readFileSync(opts[option],'utf8'));
+    if (!['id','status'].every(h=>record.header.includes(h))) throw new Error('Run records require id and status columns');
+    for (const item of record.rows) {
+      const status=item.status.trim().toLowerCase();
+      if (!item.id.trim()) throw new Error('Run records require an item id');
+      if (status==='deferred') deferred++;
+      else if (['open','accepted','blocked'].includes(status)) blocked++;
+      else if (!['fixed','resolved','closed'].includes(status)) throw new Error('Unknown run item status');
+    }
+  }
   for(const r of rows) {
     try {
       const state=assess(r);
@@ -154,7 +172,12 @@ function doctor(opts) {
     } catch(e) { report.push({id:r.id,tool:r.tool,target:r.target,status:'DRIFT',detail:e.message}); }
   }
   output(csv(REPORT,report),opts['--output'],rows.flatMap(r=>[r.source,r.target]));
-  return report.every(r=>r.status==='PASS')?0:1;
+  const passed=report.filter(r=>r.status==='PASS').length;
+  const state=passed!==rows.length || blocked ? 'BLOCKED' : deferred ? 'DEFERRED' : 'NOT VERIFIED';
+  process.stderr.write('RUN SUMMARY: adapters PASS '+passed+'/'+rows.length+'; '+
+    (coverage ? 'blocked '+blocked+'; deferred '+deferred : 'findings/deferred not supplied')+
+    '; reconciliation '+state+' (file integrity only)\n');
+  return passed===rows.length?0:1;
 }
 function apply(opts) {
   const file=safe(opts['--plan']), rows=loadPlan(file), planHash=digest(file);
@@ -221,8 +244,8 @@ function apply(opts) {
 try {
   const command=process.argv[2];
   const options={
-    discover:['--home','--repo','--roots','--approved-files','--output'],
-    doctor:['--plan','--output'],
+    discover:['--home','--repo','--ancestor-root','--roots','--approved-files','--output'],
+    doctor:['--plan','--output','--findings','--deferred'],
     apply:['--plan','--run','--execute','--reviewed-plan-sha256'],
     fingerprint:['--path','--content-reviewed']
   };

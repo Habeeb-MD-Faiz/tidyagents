@@ -2,6 +2,8 @@
 
 Run smoke in an isolated fresh work directory. Run doctor on the real reviewed plan. Keep both reports and their limits.
 
+Carry forward the [phase-5 track](phase-5-link-adapters.md). File-only runs require source/copy/link integrity, previewed no-op reapply, preservation (including recorded credential exclusions), and a synthetic restore. Mark the live behavior rows below untested; they gate live activation, not completion of an authorized file-only fixture run. Required unresolved fixture work still blocks file-only completion.
+
 | Check | Evidence needed |
 |---|---|
 | Source integrity | Pinned source fingerprints still match |

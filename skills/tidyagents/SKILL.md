@@ -21,7 +21,7 @@ Read [principles](references/principles.md) first. Read only the current phase r
 8. Default to dry run and inspect every row, because a partial preview misses conflicts.
 9. Stop on conflict or failure and retain partial output, because automatic cleanup destroys recovery evidence.
 10. State how every policy is enforced per tool, because copied instructions are advice.
-11. Prove effective loading in fresh sessions, because an installed file may never load.
+11. Prove effective loading in fresh sessions before live activation; a declared file-only track proves only files, because an installed file may never load.
 12. Name the outgoing identity and obtain scope-specific approval before publishing or sending, because an active account may be the wrong one.
 13. Keep the run private and separate from the kit, because filenames and histories identify their owner.
 14. Keep a live STATE and decision log, because another agent must resume without guessing.
@@ -51,9 +51,9 @@ Do not map any axis to another by guesswork.
 | 2 Analyse | Explain drift and conflicts | Findings, question batches | Every proposed decision has evidence | Choose, correct, or defer |
 | 3 Decide | Choose layout, boundaries, and model classes | Decisions, capability/policy matrices, layout, roster | Owner reviews concrete design | Approve explicit decisions |
 | 4 Restructure | Stage canonical non-secret files | Staged tree, archive plan, checksums | Canonical content and preservation reviewed | Approve retained originals and storage |
-| 5 Link | Connect selected tools safely | Adapter plan, backups, manifests, change log | Exact plan reviewed; dry run passes | Approve that plan hash, then activation |
+| 5 Link | Connect selected tools safely | Adapter plan, backups, manifests, change log | Exact plan reviewed; dry run and selected track's pilot pass | Approve that plan hash; live activation separately |
 | 6 Guard | Add enforceable controls | Native rules, optional hook, policy matrix | Fixtures pass; gaps accepted | Approve exact native/hook changes |
-| 7 Verify | Prove files and actual behavior | Doctor and live verification reports | Required checks pass; limitations explicit | Run or witness account-specific tests |
+| 7 Verify | Prove the selected track | Doctor and, for live activation, behavior reports | Track's required checks pass; limitations explicit | Run or witness account-specific live tests when selected |
 | 8 Handover | Make maintenance and recovery repeatable | STATE, bootstrap/restore guide, closeout | Owner can restore and run doctor | Accept closeout and deferred list |
 
 A gate covers only its named action. An earlier approval persists for unchanged authorized work. Re-ask only when the plan, risk, identity, or scope changes.
@@ -81,7 +81,7 @@ Avoid claims such as safe, unused, identical, or enforced without a defined chec
 
 Use the [first-run guide](../../docs/USAGE.md) for command syntax. The shared engine supports ordinary file copies and new links only. Stage import wrappers or narrow merged settings as ordinary non-secret files. No generic JSON merge is provided.
 
-Keep content clearance separate from plan approval. A hash reads all bytes. Do not approve a mixed credential file just to satisfy the script. Use an owner-handled export or manual tool-native setting instead.
+Keep content clearance separate from plan approval. A hash reads all bytes. Do not approve a mixed credential file just to satisfy the script. Follow the [externalization recipe](references/externalize-mcp-auth.md) for owner-run replacement, safe exports, backup exclusions, and owner-declared fake fixtures.
 
 For each adapter:
 1. Read the [contract](references/adapter-contract.md), because format alone does not define safety.
@@ -89,7 +89,7 @@ For each adapter:
 3. Preview the complete plan without Execute, because the dry run must not create backups or logs.
 4. Record the owner's review of that exact plan hash, because a CSV flag is not an authorization system.
 5. Run once with Execute and a fresh private run directory, because old output is evidence.
-6. Run doctor and a fresh-session check, because byte equality does not prove loading.
+6. Run doctor and a previewed no-op reapply. On the live-activation track, also run a fresh-session check before expanding, because byte equality does not prove loading. Use the gates in [phase 5](references/phase-5-link-adapters.md).
 
 Do not recursively copy profile roots. They mix instructions, auth, histories, caches, and links.
 

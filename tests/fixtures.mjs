@@ -17,6 +17,7 @@ function write(p,text) {fs.mkdirSync(path.dirname(p),{recursive:true});fs.writeF
 function ps(script,args=[],code=0) {
   const r=spawnSync('powershell.exe',['-NoProfile','-File',path.join(scripts,script),...args],{encoding:'utf8',windowsHide:true});
   assert.equal(r.status,code,script+': '+r.stdout+' '+r.stderr);
+  ps.stderr=r.stderr;
   return r.stdout;
 }
 function engine(args,code=0) {
@@ -62,10 +63,28 @@ const rows=[
 ];
 const plan=path.join(reports,'plan.csv');
 write(plan,csv(cols,rows));
+// A sibling fixture's parent rules must not leak into bounded discovery.
+const parentRules=path.join(work,'AGENTS.md');
+write(parentRules,'Outside the fixture discovery boundary\n');
 const inventory=path.join(reports,'inventory.csv'), initial=snapshot(home);
-ps('discover.ps1',['-HomeRoot',home,'-RepoRoot',repo,'-OutputCsv',inventory]);
+ps('discover.ps1',['-HomeRoot',home,'-RepoRoot',repo,'-AncestorRoot',repo,'-OutputCsv',inventory]);
 assert.equal(snapshot(home),initial);
 const found=parseCsv(fs.readFileSync(inventory,'utf8')).rows;
+assert(!found.some(r=>r.path===parentRules));
+assert(found.every(r=>inside(r.path,home)||inside(r.path,repo)));
+const defaultFound=parseCsv(ps('discover.ps1',['-HomeRoot',home,'-RepoRoot',repo])).rows;
+assert(!defaultFound.some(r=>r.tool==='ancestor'));
+const homeRules=path.join(home,'AGENTS.md'), nestedRepo=path.join(home,'projects','fixture');
+write(homeRules,'Inclusive home boundary fixture\n');
+write(path.join(nestedRepo,'AGENTS.md'),'Nested repository fixture\n');
+const homeFound=parseCsv(ps('discover.ps1',['-HomeRoot',home,'-RepoRoot',nestedRepo])).rows;
+assert(homeFound.some(r=>r.path===homeRules&&r.tool==='ancestor'));
+assert(homeFound.every(r=>inside(r.path,home)));
+const explicitFound=parseCsv(ps('discover.ps1',['-HomeRoot',home,'-RepoRoot',repo,'-AncestorRoot',work])).rows;
+assert(explicitFound.some(r=>r.path===parentRules&&r.tool==='ancestor'));
+assert(explicitFound.every(r=>inside(r.path,work)));
+// Deliberate negative discovery: the requested boundary does not contain repo.
+ps('discover.ps1',['-HomeRoot',home,'-RepoRoot',repo,'-AncestorRoot',home],2);
 for(const tool of ['Claude Code','Codex','Gemini CLI','Cursor']) assert(found.some(r=>r.tool===tool&&r.kind==='file'));
 assert(found.some(r=>r.path.endsWith('fixture.mdc')));
 const opaque=found.find(r=>r.path.endsWith('.env'));
@@ -76,13 +95,20 @@ const approved=path.join(reports,'approved.csv');
 write(approved,csv(['path'],[{path:old}]));
 const hashInventory=ps('discover.ps1',['-HomeRoot',home,'-ApprovedFilesCsv',approved]);
 assert.equal(parseCsv(hashInventory).rows.find(r=>r.path===old).sha256,sha(Buffer.from(original)));
-console.log('DISCOVER: PASS (metadata, explicit hashes, opaque names, nested rules)');
+console.log('DISCOVER: PASS (bounded ancestors, inclusive home, explicit hashes, opaque names, nested rules)');
+function preview(script,planPath,runDir) {
+  const before=snapshot(work), pinnedHash=sha(fs.readFileSync(planPath));
+  const result=ps(script,['-Plan',planPath,'-RunDir',runDir]);
+  assert(result.includes('DRY-RUN'));
+  assert.equal(result.match(/^PLAN SHA256 ([a-f0-9]{64})\r?$/m)?.[1],pinnedHash);
+  assert(!stat(runDir));assert.equal(snapshot(work),before);
+  return pinnedHash;
+}
 const dryRunDir=path.join(work,'dry output');
 const beforeDry=snapshot(work);
-const dry=ps('apply.ps1',['-Plan',plan,'-RunDir',dryRunDir]);
-assert(dry.includes('DRY-RUN'));assert(!stat(dryRunDir));assert.equal(snapshot(work),beforeDry);
+const pinned=preview('apply.ps1',plan,dryRunDir);
 console.log('DRY RUN: PASS (zero filesystem changes)');
-const pinned=sha(fs.readFileSync(plan));
+// Deliberate negative Execute: omit the reviewed hash after a valid preview.
 ps('apply.ps1',['-Plan',plan,'-RunDir',path.join(work,'missing approval'),'-Execute'],2);
 assert.equal(snapshot(work),beforeDry);
 const applied=path.join(work,'apply output');
@@ -103,15 +129,37 @@ for(const entry of JSON.parse(initial)) {
 }
 const doctor=path.join(reports,'doctor-pass.csv');
 ps('doctor.ps1',['-Plan',plan,'-OutputCsv',doctor]);
+assert(ps.stderr.includes('adapters PASS 3/3; findings/deferred not supplied; reconciliation NOT VERIFIED'));
 assert(parseCsv(fs.readFileSync(doctor,'utf8')).rows.every(r=>r.status==='PASS'));
+const findings=path.join(reports,'findings.csv'), deferred=path.join(reports,'deferred.csv');
+write(findings,csv(['id','status','evidence'],[{id:'F-01',status:'blocked',evidence:'owner action pending'},{id:'F-02',status:'fixed',evidence:'fixture'}]));
+write(deferred,csv(['id','status'],[{id:'D-01',status:'deferred'}]));
+const runDoctor=ps('doctor.ps1',['-Plan',plan,'-FindingsCsv',findings,'-DeferredCsv',deferred]);
+assert(ps.stderr.includes('adapters PASS 3/3; blocked 1; deferred 1; reconciliation BLOCKED'));
+assert.deepEqual(parseCsv(runDoctor).header,['id','tool','target','status','detail']);
+assert.equal(parseCsv(runDoctor).rows.length,3);
+ps('doctor.ps1',['-Plan',plan,'-DeferredCsv',deferred]);
+assert(ps.stderr.includes('blocked 0; deferred 1; reconciliation DEFERRED'));
+const closed=path.join(reports,'closed.csv'), invalid=path.join(reports,'invalid-status.csv'), badHeader=path.join(reports,'bad-header.csv');
+write(closed,csv(['id','status'],[{id:'F-01',status:'resolved'}]));
+write(invalid,csv(['id','status'],[{id:'F-01',status:'unknown'}]));
+write(badHeader,csv(['id'],[]));
+ps('doctor.ps1',['-Plan',plan,'-FindingsCsv',closed]);
+assert(ps.stderr.includes('blocked 0; deferred 0; reconciliation NOT VERIFIED'));
+ps('doctor.ps1',['-Plan',plan,'-FindingsCsv',invalid],2);
+ps('doctor.ps1',['-Plan',plan,'-DeferredCsv',badHeader],2);
+console.log('RUN SUMMARY: PASS (blocked/deferred counts, no completion claim, CSV unchanged, invalid records refused)');
 const beforeAgain=snapshot(work);
-const again=ps('bootstrap.ps1',['-Plan',plan,'-RunDir',path.join(work,'no-op output'),'-ReviewedPlanSha256',pinned,'-Execute']);
+const noOpDir=path.join(work,'no-op output');
+const againHash=preview('bootstrap.ps1',plan,noOpDir);
+const again=ps('bootstrap.ps1',['-Plan',plan,'-RunDir',noOpDir,'-ReviewedPlanSha256',againHash,'-Execute']);
 assert(again.includes('NO-OP'));assert.equal(snapshot(work),beforeAgain);
 console.log('APPLY / BOOTSTRAP: PASS (backup, retained original, links, idempotence)');
 const linkedScan=ps('discover.ps1',['-HomeRoot',home]);
 assert(parseCsv(linkedScan).rows.some(r=>r.path===linkTarget&&r.status==='not-followed'));
 fs.appendFileSync(copyTarget,'Deliberate drift\n');
 ps('doctor.ps1',['-Plan',plan],1);
+assert(ps.stderr.includes('adapters PASS 2/3; findings/deferred not supplied; reconciliation BLOCKED'));
 console.log('DOCTOR: PASS (clean pass and deliberate drift failure)');
 const wrongDir=path.join(work,'wrong directory');fs.mkdirSync(wrongDir);
 const wrongLink=path.join(home,'.claude','wrong link');fs.symlinkSync(wrongDir,wrongLink,'junction');
@@ -122,6 +170,9 @@ function rejected(name,mutation) {
   const p=path.join(reports,name+'.csv'), changed=rows.map(r=>({...r}));
   mutation(changed);write(p,csv(cols,changed));
   const before=snapshot(work);
+  // Deliberate negative tests: invalid plans must fail both preview and Execute.
+  ps('apply.ps1',['-Plan',p,'-RunDir',path.join(work,name)],2);
+  assert.equal(snapshot(work),before);
   ps('apply.ps1',['-Plan',p,'-RunDir',path.join(work,name),'-ReviewedPlanSha256',sha(fs.readFileSync(p)),'-Execute'],2);
   assert.equal(snapshot(work),before);
 }
@@ -149,7 +200,9 @@ assert.equal(parseCsv('# comment\na,b\n"x,y","line1\nline2"\n').rows[0].b,'line1
 // Restore an ordinary file through a NEW reviewed plan, retaining its changed successor.
 const restore=path.join(reports,'restore.csv');
 write(restore,csv(cols,[{...base,id:'restore-original',source:backup.backup,source_sha256:sha(Buffer.from(original)),target:old,expected_target:fingerprint(old)}]));
-ps('bootstrap.ps1',['-Plan',restore,'-RunDir',path.join(work,'restore output'),'-ReviewedPlanSha256',sha(fs.readFileSync(restore)),'-Execute']);
+const restoreDir=path.join(work,'restore output');
+const restoreHash=preview('bootstrap.ps1',restore,restoreDir);
+ps('bootstrap.ps1',['-Plan',restore,'-RunDir',restoreDir,'-ReviewedPlanSha256',restoreHash,'-Execute']);
 assert.equal(fs.readFileSync(old,'utf8'),original);
 console.log('REFUSALS / RESTORE: PASS (conflicts, opaque paths, overlap, review, CSV, retained successor)');
 const guard=path.join(scripts,'guard','guard.mjs'), policy=path.join(reports,'policy.json');

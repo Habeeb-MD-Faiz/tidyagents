@@ -1,6 +1,6 @@
 # Phase 8: hand over
 
-Write STATE, restore guide, closeout, and the change log. Keep a pointer to the reviewed plan and its fingerprint, manifests, current doctor report, and fresh-session evidence.
+Write STATE, restore guide, closeout, and the change log. Keep a pointer to the reviewed plan and its fingerprint, manifests, current doctor report, and fresh-session evidence for live activation. A phase-5 file-only closeout names that track and marks live behavior untested.
 
 Use bootstrap.ps1 or bootstrap.sh with a newly reviewed plan to recreate adapters on a prepared machine. Paths, versions, account boundaries, and preconditions must be checked again. The bootstrap delegates to apply; it does not install tools, restore auth, change PATH, or register schedules.
 

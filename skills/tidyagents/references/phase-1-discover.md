@@ -4,7 +4,7 @@ Read the dated tool matrix. Confirm installed versions before relying on current
 
 Run discover against the selected home and repository. It inventories names and metadata, not content. It records links without following them. Missing, excluded, unreadable, and metadata-only are distinct results.
 
-The scanner covers documented per-user directories, recognized repo instruction names, nested tool directories, and ancestor instruction names. It does not query registry, managed policy services, editor databases, remote machines, or account connectors. Add owner-approved physical roots with a two-column `path,tool` CSV. Review system locations, launchers, shell profiles, status lines, mods, scheduled runners, and other machines separately.
+The scanner covers documented per-user directories, recognized repo instruction names, nested tool directories, and ancestor instruction names within the selected boundary. Ancestors stop at an explicit containing HomeRoot, otherwise RepoRoot; choose another approved inclusive boundary with AncestorRoot. See the [command guide](../../../docs/USAGE.md#discover-on-windows). Path-component lstat safety checks are separate from instruction discovery. It does not query registry, managed policy services, editor databases, remote machines, or account connectors. Add owner-approved physical roots with a two-column `path,tool` CSV. Review system locations, launchers, shell profiles, status lines, mods, scheduled runners, and other machines separately.
 
 Do not claim every config was found until the coverage table lists each tool/profile, root, source, result, exclusions, and next action. A denied scan is not an empty directory. A linked profile requires a separately approved scan of its physical target.
 

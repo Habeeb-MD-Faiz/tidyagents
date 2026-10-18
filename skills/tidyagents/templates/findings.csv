@@ -1,6 +1,6 @@
 # id: stable finding; category: drift/conflict/exposure/loading/identity/duplication/unknown; severity: owner-defined priority.
 # evidence: safe artifact pointer; confidence: verified/inferred/needs checking; impact: consequence; proposed_action: next check or remedy.
-# question_id: owner decision needed; status: open/accepted/fixed/deferred with evidence.
+# question_id: owner decision needed; status: open/accepted/blocked/fixed/deferred with evidence. Accepted is still unresolved for doctor.
 id,category,severity,evidence,confidence,impact,proposed_action,question_id,status
 F-01,drift,medium,inventory row,verified,Two rules differ,Review canonical choice,Q-01,open
 

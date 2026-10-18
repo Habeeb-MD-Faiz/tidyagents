@@ -4,7 +4,7 @@ Group findings by impact: exposure, wrong identity/scope, conflicting policy, br
 
 Compare content only after clearance. Equal hashes show equal bytes, not equal authority. Different files may be intentional scope overrides. A missing reference can be a disabled feature rather than dead configuration.
 
-For secrets-in-config, flag the containing filename and location category only. Stop content review. Have the owner replace embedded values with an approved external mechanism. Do not quote, redact after reading, copy, or test the value.
+For secrets-in-config, name only the containing file and key name. Stop content review. Follow the [owner-run externalization recipe](externalize-mcp-auth.md) for tool-native environment references, value-free checks, backup exclusions, and owner-declared fake fixtures. Never read, print, copy, back up, or test the value.
 
 Identify contradictions between tool defaults, owner policy, permissions, hooks, launchers, and scheduled processes. Check whether a plugin or local setting overrides the intended model or connector boundary.
 

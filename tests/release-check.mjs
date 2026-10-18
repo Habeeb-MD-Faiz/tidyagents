@@ -18,7 +18,7 @@ function walk(dir) {
 }
 walk(root);
 const privatePattern=process.argv[2]?new RegExp(process.argv[2],'i'):null;
-const domains=new Set(['code.claude.com','learn.chatgpt.com','developers.openai.com','geminicli.com','cursor.com']);
+const domains=new Set(['code.claude.com','learn.chatgpt.com','developers.openai.com','geminicli.com','cursor.com','tidyagents.vercel.app']);  // vendor docs plus the project's own site
 let links=0, sources=0;
 for(const file of files) {
   const text=fs.readFileSync(file,'utf8'),rel=path.relative(root,file);

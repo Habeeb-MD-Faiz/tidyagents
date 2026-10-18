@@ -35,6 +35,8 @@ if ($LASTEXITCODE -ne 0) { throw 'Discovery is incomplete' }
 
 The record directory must already exist. Choose a new report filename. With HomeRoot, the scan ignores the current shell's real profile overrides. Omit HomeRoot only when intentionally scanning the current user's defaults and documented overrides.
 
+Repository ancestor discovery stops at HomeRoot (inclusive) when RepoRoot is inside an explicit HomeRoot; otherwise it stops at RepoRoot. To select another approved ancestor, pass `-AncestorRoot` (`--ancestor-root` in the engine/shell wrapper). It must contain RepoRoot. Set it to RepoRoot to skip ancestor discovery entirely. Smoke does this explicitly. Additional RootsCsv entries remain separate authorized scopes. Path-component lstat checks still run up to the filesystem root to reject linked ancestors; these safety checks do not discover or read ancestor instruction files.
+
 Discover lists metadata, skips secret-looking names without reading them, and records links without following them. It never reads ordinary file contents by default. An optional ApprovedFilesCsv with a single path column permits hashes of exactly those cleared files. It cannot authorize reading opaque names.
 
 Add other profiles, system files, launchers, and approved exports with RootsCsv containing path,tool. The scanner does not discover every managed service or editor database. Fill the coverage table and unknown list manually.
@@ -84,7 +86,11 @@ if ($LASTEXITCODE -ne 0) { throw 'Drift or incomplete check' }
 
 Use a new attempt directory each time. Apply creates it only after preflight. Inspect change-log.csv and archive-manifest.csv. Existing ordinary targets are backed up and retained beside the target before replacement. No delete operation is used. New links require absent targets.
 
-Repeat the same authorized plan with a fresh unused RunDir to prove no-op behavior. If everything is already current, that directory is not created. Do not relax a precondition to make an unexpected state pass.
+Preview the same authorized plan again, assert its printed hash, then repeat with a fresh unused RunDir to prove no-op behavior. If everything is already current, that directory is not created. Do not relax a precondition to make an unexpected state pass.
+
+Doctor writes a short `RUN SUMMARY` to stderr, leaving stdout and OutputCsv as the existing five-column CSV. Optional `-FindingsCsv` and `-DeferredCsv` (`--findings` and `--deferred`) accept owner-cleared non-secret CSV records with `id` and `status` columns; extra columns are allowed, including the findings template. Counts are per supplied row, so supply each item once. `open`, `accepted`, and `blocked` count as blocked; `deferred` counts as deferred; `fixed`, `resolved`, and `closed` count as resolved. An accepted finding still needs a remedy or explicit deferral. Missing columns, blank ids, and unknown statuses stop with exit 2. Never pass a mixed credential file as a run record.
+
+The summary reports adapters PASS count and known blocked/deferred counts. With neither record supplied, it says coverage was not supplied. Even zero known outstanding items does not certify reconciliation or live behavior. Doctor's exit code still describes adapter integrity only; blocked findings can accompany exit 0. Use the [phase-5 track gates](../skills/tidyagents/references/phase-5-link-adapters.md) and the full verification report for acceptance.
 
 | Result | Meaning |
 |---|---|

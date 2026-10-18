@@ -6,6 +6,8 @@ Start with native permissions and OS/service boundaries. Keep a vault opaque to 
 
 A temporary wrapper may inject credentials into one reviewed child command. Keep values out of arguments, files, logs, and transcripts. The child must read its environment itself. Any arbitrary child can print or transmit that environment, so this is not isolation. Do not ship or generate credential values.
 
+For an embedded MCP credential, use the [owner-run externalization recipe](externalize-mcp-auth.md). It defines each tool's reference syntax, shape checks without the value, and exclusions from kit backups. Owner-declared fake fixtures may complete that recipe on the file-only track.
+
 ## Optional Claude hook
 
 The shipped guard reads one JSON event from stdin and an explicit non-secret policy file. Populate secretRoots and configRoots with reviewed physical roots. Keep the policy outside the secret store. Empty arrays retain name screening but protect no extra owner-specific roots.
@@ -38,5 +40,5 @@ A hook crash, disabled registration, bypass mode, another tool, owner approval, 
 
 Use each other tool's native hooks/permissions after a separate schema review. No cross-tool hook adapter ships here.
 
-Gate: fixture results, live wiring evidence, and residual risks are recorded and accepted.
+Gate: fixture results and residual risks are recorded and accepted. Live activation also requires live wiring evidence. On the phase-5 file-only track, keep controls inactive and label wiring and enforcement untested.
 
