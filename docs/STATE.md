@@ -1,4 +1,4 @@
-# STATE: harnesskit build
+# STATE: tidyagents build
 
 Updated: 2026-10-19 by build agent.
 
@@ -47,8 +47,8 @@ Waiting on owner: nothing required for the build; final name is deferred.
 ## Pointers
 
 - README.md: entry point and boundaries.
-- skills/harnesskit/SKILL.md: reconciliation procedure.
-- skills/harnesskit/references/tool-matrix.md: dated vendor evidence.
+- skills/tidyagents/SKILL.md: reconciliation procedure.
+- skills/tidyagents/references/tool-matrix.md: dated vendor evidence.
 - docs/BUILD-NOTES.md: validation and unknowns.
 - tests/smoke.ps1: retained synthetic Windows suite.
 - tests/release-check.mjs: read-only package and identifier checks.

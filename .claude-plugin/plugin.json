@@ -1,9 +1,9 @@
 {
-  "name": "harnesskit",
+  "name": "tidyagents",
   "version": "0.1.0",
   "description": "Reconcile an AI agent harness across tools with owner decisions, retained originals, adapters, and verification.",
   "author": {
-    "name": "the harnesskit authors"
+    "name": "the tidyagents authors"
   },
   "license": "MIT",
   "keywords": [

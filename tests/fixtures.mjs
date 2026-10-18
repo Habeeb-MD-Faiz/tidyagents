@@ -3,10 +3,10 @@ import path from 'node:path';
 import assert from 'node:assert/strict';
 import {fileURLToPath} from 'node:url';
 import {spawnSync} from 'node:child_process';
-import {csv,sha,secretName,parseCsv,fingerprint,safe,stat,inside} from '../skills/harnesskit/scripts/lib/safety.mjs';
+import {csv,sha,secretName,parseCsv,fingerprint,safe,stat,inside} from '../skills/tidyagents/scripts/lib/safety.mjs';
 
 const root=path.dirname(path.dirname(fileURLToPath(import.meta.url)));
-const scripts=path.join(root,'skills','harnesskit','scripts');
+const scripts=path.join(root,'skills','tidyagents','scripts');
 const work=safe(process.argv[2]);
 assert(inside(work,path.parse(work).root),'Containment must handle a volume root');
 assert(!stat(work),'WorkDir must be new; tests never clean old runs');

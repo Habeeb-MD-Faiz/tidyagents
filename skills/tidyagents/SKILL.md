@@ -1,9 +1,9 @@
 ---
-name: harnesskit
+name: tidyagents
 description: Reconcile an owner's AI agent configuration across tools and providers through read-only discovery, owner decisions, canonical files, reviewed adapters, guards, and verified handover.
 ---
 
-# harnesskit
+# tidyagents
 
 Use this procedure to reconcile an existing harness or design a new one from an inventory. Keep policy portable. Adapt loading and enforcement to each tool.
 

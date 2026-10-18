@@ -1,6 +1,6 @@
 ---
-name: harnesskit-scout
-description: Summarize a harnesskit inventory and draft short owner questions without deciding or editing.
+name: tidyagents-scout
+description: Summarize a tidyagents inventory and draft short owner questions without deciding or editing.
 tools: Read, Glob, Grep
 ---
 

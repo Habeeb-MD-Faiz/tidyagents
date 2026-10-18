@@ -1,6 +1,6 @@
 # Build notes
 
-Date: 2026-10-19. Version: 0.1.0. Working name: harnesskit.
+Date: 2026-10-19. Version: 0.1.0. Working name: tidyagents.
 
 ## Method and scope
 
@@ -76,7 +76,7 @@ Do not turn these unknowns into claims that a feature is absent.
 
 ## Open owner/run questions
 
-No answer is required to complete this kit build. Each real run must choose scopes, profiles, model classes, content clearance, enforcement boundaries, and acceptance checks. The final project name remains a later decision; harnesskit is used consistently.
+No answer is required to complete this kit build. Each real run must choose scopes, profiles, model classes, content clearance, enforcement boundaries, and acceptance checks. The final project name remains a later decision; tidyagents is used consistently.
 
 ## Review next
 

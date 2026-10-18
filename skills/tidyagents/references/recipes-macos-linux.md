@@ -5,9 +5,9 @@
 Require an existing Node 18+ installation and a POSIX shell. Only Node 24 was used during build. Do not install packages as part of discovery.
 
 ```sh
-sh "<CONFIG-REPO>/skills/harnesskit/scripts/discover.sh" --home "<OWNER-HOME>" --repo "<SCOPE>"
-sh "<CONFIG-REPO>/skills/harnesskit/scripts/apply.sh" --plan "<PRIVATE-RUN>/adapter-plan.csv"
-sh "<CONFIG-REPO>/skills/harnesskit/scripts/doctor.sh" --plan "<PRIVATE-RUN>/adapter-plan.csv"
+sh "<CONFIG-REPO>/skills/tidyagents/scripts/discover.sh" --home "<OWNER-HOME>" --repo "<SCOPE>"
+sh "<CONFIG-REPO>/skills/tidyagents/scripts/apply.sh" --plan "<PRIVATE-RUN>/adapter-plan.csv"
+sh "<CONFIG-REPO>/skills/tidyagents/scripts/doctor.sh" --plan "<PRIVATE-RUN>/adapter-plan.csv"
 ```
 
 Replace placeholders before running. Use quotes around paths. Omit --execute for dry run. Execution uses --run and --reviewed-plan-sha256, as documented in USAGE.

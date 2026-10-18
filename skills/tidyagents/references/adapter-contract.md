@@ -46,7 +46,7 @@ Use the engine's fingerprint command so the algorithm is identical. Require cont
 
 Default dry run prints the plan result and hash only. It creates no directory, lock, backup, or report. Execute requires that hash and a new run directory with an existing parent. A fully current execution returns no-op without creating the run directory.
 
-Before replacing a file, copy it to the run's backup, verify its hash, then retain the original in `.harnesskit-archive/<run-name>-<id>/` beside the target. Record prepared and archived manifest rows. Create the successor exclusively and verify it. New files/links have no prior bytes to back up; the reviewed plan and change log record their creation.
+Before replacing a file, copy it to the run's backup, verify its hash, then retain the original in `.tidyagents-archive/<run-name>-<id>/` beside the target. Record prepared and archived manifest rows. Create the successor exclusively and verify it. New files/links have no prior bytes to back up; the reviewed plan and change log record their creation.
 
 Never delete files, even after success or failure. A failure may leave a backup, archived original, or partial successor. Stop and inspect the change log. Recover using a new reviewed plan, not automatic rollback.
 

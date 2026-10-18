@@ -47,7 +47,7 @@ function discovery(opts) {
     readCsv(opts['--approved-files'],['path']).map(r => key(safe(r.path))) : []);
   const rows = [], seen = new Set();
   let incomplete = false, count = 0, capped = false;
-  const excluded = new Set(['.git','node_modules','runs','.harnesskit-archive','archive','archives']);
+  const excluded = new Set(['.git','node_modules','runs','.tidyagents-archive','archive','archives']);
   const known = /^(?:AGENTS(?:\.override)?\.md|CLAUDE(?:\.local)?\.md|GEMINI\.md|SCOPE\.md|\.cursorrules|\.mcp\.json)$/i;
   function walk(p, tool, inConfig = true) {
     if (capped) return;
@@ -189,7 +189,7 @@ function apply(opts) {
         const before=digest(r.target), backup=path.join(run,r.id+'.backup');
         fs.copyFileSync(r.target,backup,fs.constants.COPYFILE_EXCL);
         if(digest(backup)!==before) throw new Error('Backup mismatch');
-        const archiveRoot=path.join(path.dirname(r.target),'.harnesskit-archive');
+        const archiveRoot=path.join(path.dirname(r.target),'.tidyagents-archive');
         safe(archiveRoot);
         if(!stat(archiveRoot)) fs.mkdirSync(archiveRoot);
         if(!stat(archiveRoot)?.isDirectory()) throw new Error('Archive parent is not a directory');

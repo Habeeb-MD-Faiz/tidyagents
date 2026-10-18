@@ -1,6 +1,6 @@
 ---
-name: harnesskit-auditor
-description: Review a harnesskit plan and adapter evidence without changing files.
+name: tidyagents-auditor
+description: Review a tidyagents plan and adapter evidence without changing files.
 tools: Read, Glob, Grep
 ---
 

@@ -7,7 +7,7 @@ if (-not $WorkDir) {
     $WorkDir = Join-Path $repoRoot ('runs\smoke-' + $stamp)
 }
 try {
-    $scripts = @(Get-ChildItem -LiteralPath (Join-Path $repoRoot 'skills\harnesskit\scripts') -Filter '*.ps1' -File)
+    $scripts = @(Get-ChildItem -LiteralPath (Join-Path $repoRoot 'skills\tidyagents\scripts') -Filter '*.ps1' -File)
     $scripts += Get-Item -LiteralPath $PSCommandPath
     foreach ($script in $scripts) {
         $parseTokens = $null

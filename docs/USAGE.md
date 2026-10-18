@@ -6,9 +6,9 @@ You need an installed agent with local file access, permission to use it with th
 
 For any agent, open this kit and ask it to read AGENTS.md and start intake. This is an explicit reading request, not a claim of automatic discovery.
 
-For Claude Code, follow the local marketplace commands in README. Review the installation, then invoke the namespaced skill. No hook is installed automatically. Installation formats and sources are in the [tool matrix](../skills/harnesskit/references/tool-matrix.md).
+For Claude Code, follow the local marketplace commands in README. Review the installation, then invoke the namespaced skill. No hook is installed automatically. Installation formats and sources are in the [tool matrix](../skills/tidyagents/references/tool-matrix.md).
 
-Keep the entire skills/harnesskit folder together. Its references and scripts are part of the workflow.
+Keep the entire skills/tidyagents folder together. Its references and scripts are part of the workflow.
 
 ## Prepare private records
 
@@ -27,7 +27,7 @@ $kitRoot = '<CONFIG-REPO>'
 $homeRoot = '<OWNER-HOME>'
 $repoRoot = '<SCOPE>'
 $recordRoot = '<PRIVATE-RUN>'
-$scriptRoot = Join-Path $kitRoot 'skills\harnesskit\scripts'
+$scriptRoot = Join-Path $kitRoot 'skills\tidyagents\scripts'
 $inventoryPath = Join-Path $recordRoot 'inventory.csv'
 & powershell.exe -NoProfile -File (Join-Path $scriptRoot 'discover.ps1') -HomeRoot $homeRoot -RepoRoot $repoRoot -OutputCsv $inventoryPath
 if ($LASTEXITCODE -ne 0) { throw 'Discovery is incomplete' }
@@ -49,7 +49,7 @@ Create target parents as a separate reviewed preparation step. Do not use a secr
 
 ## Build a reviewed plan
 
-Use the exact columns from templates/adapter-plan.csv. Supported operations are file copy and new links. Read the [adapter contract](../skills/harnesskit/references/adapter-contract.md) before selecting paths.
+Use the exact columns from templates/adapter-plan.csv. Supported operations are file copy and new links. Read the [adapter contract](../skills/tidyagents/references/adapter-contract.md) before selecting paths.
 
 For a cleared file or directory, calculate its fingerprint:
 
@@ -118,7 +118,7 @@ powershell.exe -NoProfile -File .\tests\smoke.ps1
 
 Or pass -WorkDir with a new nonexistent local path. The suite retains every fixture and exits nonzero on failure. It checks fake Claude/Codex/Gemini/Cursor roots, dry-run purity, apply, backups, junctions, idempotence, deliberate drift, restore, refusals, and guard JSON decisions.
 
-The shell versions use --home, --repo, --plan, --run, --output, --reviewed-plan-sha256, and --execute. See [macOS/Linux recipes](../skills/harnesskit/references/recipes-macos-linux.md). They are untested on those platforms.
+The shell versions use --home, --repo, --plan, --run, --output, --reviewed-plan-sha256, and --execute. See [macOS/Linux recipes](../skills/tidyagents/references/recipes-macos-linux.md). They are untested on those platforms.
 
 If a run stops, retain originals, backups, logs, and partial targets. Record the last verified step in STATE. Ask for the smallest missing fact; do not widen permissions or clean up evidence to get a green result.
 

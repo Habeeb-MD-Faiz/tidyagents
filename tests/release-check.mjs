@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import assert from 'node:assert/strict';
-import {secretName,parseCsv} from '../skills/harnesskit/scripts/lib/safety.mjs';
+import {secretName,parseCsv} from '../skills/tidyagents/scripts/lib/safety.mjs';
 const root=path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const files=[];
 function walk(dir) {
@@ -40,11 +40,11 @@ for(const file of files) {
   if(file.endsWith('.csv'))assert.equal(parseCsv(text).rows.length,1,'Template needs one example row');
   if(file.endsWith('.ps1'))assert(!/[^\x00-\x7f]/.test(text),'PowerShell source must be ASCII');
 }
-const skill=fs.readFileSync(path.join(root,'skills','harnesskit','SKILL.md'),'utf8');
+const skill=fs.readFileSync(path.join(root,'skills','tidyagents','SKILL.md'),'utf8');
 assert(skill.split('\n').length<350,'Skill length exceeds budget');
 const manifest=JSON.parse(fs.readFileSync(path.join(root,'.claude-plugin','plugin.json'),'utf8'));
 const marketplace=JSON.parse(fs.readFileSync(path.join(root,'.claude-plugin','marketplace.json'),'utf8'));
-assert.equal(manifest.name,'harnesskit');assert.equal(manifest.version,'0.1.0');
+assert.equal(manifest.name,'tidyagents');assert.equal(manifest.version,'0.1.0');
 assert.equal(marketplace.plugins[0].source,'./');
 assert.equal(marketplace.plugins[0].name,manifest.name);
 console.log('RELEASE CHECK: PASS ('+files.length+' source files; '+links+' local links; '+sources+' official-source links)');

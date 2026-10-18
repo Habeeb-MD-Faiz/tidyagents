@@ -9,7 +9,7 @@ $kitRoot = '<CONFIG-REPO>'
 $homeRoot = '<OWNER-HOME>'
 $repoRoot = '<SCOPE>'
 $recordRoot = '<PRIVATE-RUN>'
-$scriptRoot = Join-Path $kitRoot 'skills\harnesskit\scripts'
+$scriptRoot = Join-Path $kitRoot 'skills\tidyagents\scripts'
 & powershell.exe -NoProfile -File (Join-Path $scriptRoot 'discover.ps1') -HomeRoot $homeRoot -RepoRoot $repoRoot -OutputCsv (Join-Path $recordRoot 'inventory.csv')
 if ($LASTEXITCODE -ne 0) { throw 'Discovery incomplete' }
 ```
